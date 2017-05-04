@@ -17,7 +17,7 @@ public:
             sarafun_msgs::MoveKeyframeGoal>::ExecuteAction(node_name,
                                                                action_name,
                                                                bt_name),
-        node_name_(node_name), bt_name_(bt_name) {
+        node_name_(node_name), bt_name_(bt_name), curr_idx_(0) {
     node_handle_ = ros::NodeHandle(node_name);
   }
   ~MoveAction() {}
@@ -29,6 +29,8 @@ private:
   ros::NodeHandle node_handle_;
   std::string node_name_;
   std::string bt_name_;
+  std::vector<int> idx_list_;
+  int curr_idx_;
 };
 }
 #endif

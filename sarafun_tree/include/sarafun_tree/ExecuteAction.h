@@ -6,6 +6,7 @@
 #include <actionlib/client/simple_action_client.h>
 
 namespace sarafun {
+
 /**
   This class implements an interface for BT actions destined to call a generic
   rosaction server.
@@ -55,6 +56,8 @@ protected:
       @return False in case the parameter does not exist, true otherise.
   **/
   bool fillParameter(std::string param_name, std::string &param_val);
+  bool fillParameter(std::string param_name, bool &param_val);
+  bool fillParameter(std::string param_name, std::vector<int> &param_val);
 
   /**
       Gets a generic parameter from the parameter server.
@@ -79,8 +82,8 @@ protected:
 private:
   actionlib::SimpleActionClient<ActionClass> *action_client_;
   ActionGoal goal_;
-  std::string action_name_;
   ros::Time start_time_; // Current execution start time
+  std::string action_name_;
 };
 
 // Template classes "must" be implemented in the header files... -->
@@ -207,6 +210,18 @@ bool ExecuteAction<ActionClass, ActionGoal>::fillParameter(
 }
 
 template <class ActionClass, class ActionGoal>
+bool ExecuteAction<ActionClass, ActionGoal>::fillParameter(
+    std::string param_name, bool &param_val) {
+  if (nh_.hasParam(param_name.c_str())) {
+    nh_.getParam(param_name.c_str(), param_val);
+  } else {
+    ROS_ERROR("%s not set!", param_name.c_str());
+    return false;
+  }
+  return true;
+}
+
+template <class ActionClass, class ActionGoal>
 void ExecuteAction<ActionClass, ActionGoal>::fillParameter(
     std::string param_name, std::string def, std::string &param_val) {
   if (nh_.hasParam(param_name.c_str())) {
@@ -237,6 +252,19 @@ void ExecuteAction<ActionClass, ActionGoal>::fillParameter(
     ROS_WARN("Param '%s' not set. Using default: %d", param_name.c_str(),
              def);
   }
+}
+
+template <class ActionClass, class ActionGoal>
+bool ExecuteAction<ActionClass, ActionGoal>::fillParameter(std::string param_name, std::vector<int> &param_val)
+{
+  if (nh_.hasParam(param_name.c_str())) {
+    nh_.getParam(param_name.c_str(), param_val);
+  } else {
+    ROS_ERROR("Param '%s' not set.", param_name.c_str());
+    return false;
+  }
+
+  return true;
 }
 }
 #endif

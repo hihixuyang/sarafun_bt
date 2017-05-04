@@ -2,10 +2,24 @@
 
 namespace sarafun {
 bool AssembledAction::fillGoal(sarafun_msgs::AssembledKeyframeGoal &goal) {
-  int idx;
+  bool prev_result;
 
-  fillParameter("/sarafun/assembled/idx", 0, idx);
-  goal.idx = idx;
+  if (idx_list_.size() == 0)
+  {
+    if(!fillParameter("/sarafun/assembled/idx", idx_list_))
+    {
+      goal.idx = 0;
+      return false;
+    }
+  }
+
+  goal.idx = idx_list_[curr_idx_];
+  curr_idx_++;
+
+  if (curr_idx_ >= idx_list_.size())
+  {
+    curr_idx_ = 0;
+  }
 
   return true;
 }

@@ -29,6 +29,8 @@ private:
   ros::NodeHandle node_handle_;
   std::string node_name_;
   std::string bt_name_;
+  std::vector<int> idx_list_;
+  int curr_idx_;
 };
 }
 #endif
